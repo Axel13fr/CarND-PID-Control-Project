@@ -13,9 +13,13 @@ public:
   /*
   * Coefficients
   */ 
-  double Kp;
-  double Ki;
-  double Kd;
+  double Kp_;
+  double Ki_;
+  double Kd_;
+
+  double diff_cte;
+  double prev_cte;
+  double int_cte;
 
   /*
   * Constructor
@@ -41,6 +45,13 @@ public:
   * Calculate the total PID error.
   */
   double TotalError();
+
+  /**
+   * @brief ControlSteering
+   * @param angle the currently applied angle
+   * @return
+   */
+  double ControlSteering(double cte);
 };
 
 #endif /* PID_H */
