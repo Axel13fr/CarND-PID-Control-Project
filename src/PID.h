@@ -1,6 +1,8 @@
 #ifndef PID_H
 #define PID_H
 
+#include <vector>
+
 class PID {
 public:
   /*
@@ -20,6 +22,8 @@ public:
   double diff_cte;
   double prev_cte;
   double int_cte;
+
+  double error;
 
   /*
   * Constructor
@@ -52,6 +56,11 @@ public:
    * @return
    */
   double ControlSteering(double cte);
+  /**
+   * @brief Init PID : coeff and errors
+   * @param K_vec : double Kp, double Ki, double Kd
+   */
+  void Init(std::vector<double> K_vec);
 };
 
 #endif /* PID_H */

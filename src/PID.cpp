@@ -16,6 +16,11 @@ void PID::Init(double Kp, double Ki, double Kd) {
     Ki_ = Ki;
     prev_cte = 0;
     int_cte = 0;
+    error = 0;
+}
+
+void PID::Init(std::vector<double> K_vec){
+    Init(K_vec[0],K_vec[1],K_vec[2]);
 }
 
 double PID::ControlSteering(double cte){
@@ -27,9 +32,10 @@ void PID::UpdateError(double cte) {
     diff_cte = cte - prev_cte;
     prev_cte = cte;
     int_cte += cte;
+    error += cte*cte;
 }
 
 double PID::TotalError() {
-    return int_cte;
+    return error;
 }
 
