@@ -41,9 +41,13 @@ int main()
 
     PID pid;
     TWIDDLE_STATE_E twi_state = POSITIVE_TEST_NEEDED;
+    auto RUN_TWIDDLE = false;
     // Initialize Kp, Ki, Kd
-    std::vector<double> K_vec{0.8, 0.0004, 4.5};
-    std::vector<double> K_steps{0.05,0.01,0.3};
+    // Manually tuned: 0.8, 0.0004, 4.5
+    // 500steps optimized : 0.860978 0.000360201 4.14125 (30.4354 best error)
+    // 1500steps optimized:
+    std::vector<double> K_vec{0.860978,0.000360201,4.14125};
+    std::vector<double> K_steps{0.04,0.0001,0.2};
     pid.Init(K_vec);
     unsigned int K_idx = 0;
     double best_error = 10E10;
@@ -78,7 +82,7 @@ int main()
                     //std::cout << "Step Number: " << step << std::endl;
 
                     // Train only over the first steps and send a reset
-                    if(step == 250 or step == 0){
+                    if(RUN_TWIDDLE and (step == 500 or step == 0)){
                         std::string reset_msg = "42[\"reset\",{}]";
                         ws.send(reset_msg.data(),reset_msg.length(),uWS::OpCode::TEXT);
                         // Check if training shall be stopped
@@ -92,7 +96,8 @@ int main()
                                 new_state = TESTING_POSITIVE_STEP;
                                 break;
                             case TESTING_POSITIVE_STEP:
-                                std::cout << "Total error: " << pid.TotalError() <<std::endl;
+                                std::cout << "Total error: " << pid.TotalError()
+                                          << " Best: "<< best_error <<std::endl;
                                 if(pid.TotalError() < best_error){
                                     std::cout << "pos. step improved " << std::endl;
                                     // Improved so accelerate search step
@@ -111,7 +116,8 @@ int main()
                                 }
                                 break;
                             case TESTING_NEGATIVE_STEP:
-                                std::cout << "Total error: " << pid.TotalError() <<std::endl;
+                                std::cout << "Total error: " << pid.TotalError()
+                                          << " Best: "<< best_error <<std::endl;
                                 // 3. Check negative step result
                                 if(pid.TotalError() < best_error){
                                     // Improved so accelerate search step
