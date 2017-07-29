@@ -42,15 +42,16 @@ int main()
     PID pid;
     TWIDDLE_STATE_E twi_state = POSITIVE_TEST_NEEDED;
     auto RUN_TWIDDLE = false;
+    auto TRAINING_STEPS = 2700;
     // Initialize Kp, Ki, Kd
     // Manually tuned: 0.8, 0.0004, 4.5
     // 500steps optimized : 0.860978 0.000360201 4.14125 (30.4354 best error)
-    // 1500steps optimized:
-    std::vector<double> K_vec{0.860978,0.000360201,4.14125};
+    // 1500steps optimized: 0.666776 0.000689087 4.25935 (462.2 best error)
+    std::vector<double> K_vec{0.666776,0.000689087,4.25935};
     std::vector<double> K_steps{0.04,0.0001,0.2};
     pid.Init(K_vec);
     unsigned int K_idx = 0;
-    double best_error = 10E10;
+    double best_error = 3400;
 
     h.onMessage([&](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
         // "42" at the start of the message means there's a websocket message event.
@@ -82,7 +83,7 @@ int main()
                     //std::cout << "Step Number: " << step << std::endl;
 
                     // Train only over the first steps and send a reset
-                    if(RUN_TWIDDLE and (step == 500 or step == 0)){
+                    if(RUN_TWIDDLE and (step == TRAINING_STEPS or step == 0)){
                         std::string reset_msg = "42[\"reset\",{}]";
                         ws.send(reset_msg.data(),reset_msg.length(),uWS::OpCode::TEXT);
                         // Check if training shall be stopped
