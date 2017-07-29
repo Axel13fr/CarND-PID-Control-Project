@@ -43,7 +43,7 @@ int main()
     TWIDDLE_STATE_E twi_state = POSITIVE_TEST_NEEDED;
     // Initialize Kp, Ki, Kd
     std::vector<double> K_vec{0.8, 0.0004, 4.5};
-    std::vector<double> K_steps{0.1,0.01,0.2};
+    std::vector<double> K_steps{0.05,0.01,0.3};
     pid.Init(K_vec);
     unsigned int K_idx = 0;
     double best_error = 10E10;
@@ -78,7 +78,7 @@ int main()
                     //std::cout << "Step Number: " << step << std::endl;
 
                     // Train only over the first steps and send a reset
-                    if(step == 500 or step == 0){
+                    if(step == 250 or step == 0){
                         std::string reset_msg = "42[\"reset\",{}]";
                         ws.send(reset_msg.data(),reset_msg.length(),uWS::OpCode::TEXT);
                         // Check if training shall be stopped
@@ -92,6 +92,7 @@ int main()
                                 new_state = TESTING_POSITIVE_STEP;
                                 break;
                             case TESTING_POSITIVE_STEP:
+                                std::cout << "Total error: " << pid.TotalError() <<std::endl;
                                 if(pid.TotalError() < best_error){
                                     std::cout << "pos. step improved " << std::endl;
                                     // Improved so accelerate search step
@@ -104,10 +105,13 @@ int main()
                                     // Didn't imrove: do negative step
                                     K_vec[K_idx] -= 2*K_steps[K_idx];
                                     new_state = TESTING_NEGATIVE_STEP;
+                                    // Reset for negative step
+                                    pid.Init(K_vec);
                                     step = 0;
                                 }
                                 break;
                             case TESTING_NEGATIVE_STEP:
+                                std::cout << "Total error: " << pid.TotalError() <<std::endl;
                                 // 3. Check negative step result
                                 if(pid.TotalError() < best_error){
                                     // Improved so accelerate search step
