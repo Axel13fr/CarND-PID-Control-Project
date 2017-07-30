@@ -46,7 +46,7 @@ int main()
     // Initialize Kp, Ki, Kd
     // Manually tuned: 0.8, 0.0004, 4.5
     // 500steps optimized : 0.860978 0.000360201 4.14125 (30.4354 best error)
-    // 1500steps optimized: 0.666776 0.000689087 4.25935 (462.2 best error)
+    // 2700steps optimized: 0.666776 0.000689087 4.25935 (462.2 best error)
     std::vector<double> K_vec{0.666776,0.000689087,4.25935};
     std::vector<double> K_steps{0.04,0.0001,0.2};
     pid.Init(K_vec);
