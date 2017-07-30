@@ -23,7 +23,7 @@ P causes the controler to response proportionnaly to the error. Its main influen
 
 D is proportionnal to the error derivative and will be useful to attenuate an overreacting filter when getting closer to the setpoint, for example to recude overshoot effects of a high P.
 
-I is proportionnal to the integraal of the error. It is used to account for any given bias in the control. For example when a 0 steering angle would not have the vehicle's wheels be aligned with the vehicle axis, the vehicle will always go a bit left or right instead of straight. By integrating this error over time, the I coefficient will correct that. 
+I is proportionnal to the integral of the error. It is used to account for any given bias in the control. For example when a 0 steering angle would not have the vehicle's wheels be aligned with the vehicle axis, the vehicle will always go a bit left or right instead of straight. By integrating this error over time, the I coefficient will correct that. 
 
 ### Manually tuning the parameters
 
