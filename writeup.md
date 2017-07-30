@@ -35,4 +35,20 @@ Finally, I introduced a pinch of I, the effect of which is hard to check visuall
 
 ### Finely optimizing with Twiddle
 
-To get better performances, 
+To get better performances, I implented twiddle to automatically search for better parameters based on the accumulated squared cross track error, over a fixed number of steps.
+
+First, I started with my manually tuned values for Kp, Ki, Kd: 0.8, 0.0004, 4.5.
+I ran twiddle over the first 500 steps of the track to optimize the PID when going mostly straight.
+I got as a result for Kp, Ki, Kd: 0.860978 0.000360201 4.14125.
+
+Second, when testing this result on the full track, I had large overshoots on the final sharp turn, causing the vehicle to dangerously go off track. To compensate for that, I had to take this part of the lap into account so I ran twiddle over the first 2700 steps to include that sharp turn.  
+I got as a result for Kp, Ki, Kd: 0.666776,0.000689087,4.25935. As one can see, the final optimization reduced P for less overshoot and increased I and D up to a certain point.
+
+
+### Final result
+
+The car can stay on track for the complete lap but controlling it only using the current cross track error has shown its limit:
+the PID provides a reactive response withouth any possible anticipation. For a continuous sharp turn, this approach as shown its limit as the vehicle doesn't follow smoothly the middle of the track and keeps on overshooting.
+
+Let's see what model predictive control brings :)
+
